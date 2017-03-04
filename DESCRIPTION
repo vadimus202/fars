@@ -13,3 +13,4 @@ Imports: dplyr,
     readr,
     tidyr,
     maps
+Suggests: testthat
