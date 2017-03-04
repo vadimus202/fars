@@ -1,0 +1,15 @@
+Package: fars
+Type: Package
+Title: Working with FARS data
+Version: 0.1.0.9000
+Author: Vadim Bondarenko
+Maintainer: Vadim Bondarenko <vadimus@yahoo.com>
+Description: Makes it easy to read and plot FARS data.
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: yes
+RoxygenNote: 6.0.1
+Imports: dplyr,
+    readr,
+    tidyr,
+    maps
