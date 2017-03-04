@@ -12,6 +12,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+[![Travis-CI Build Status](https://travis-ci.org/vadimus202/fars.svg?branch=master)](https://travis-ci.org/vadimus202/fars)
+
 ## Intro
 
 Working with FARS data made easy.
