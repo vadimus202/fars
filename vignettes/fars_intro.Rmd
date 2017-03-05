@@ -1,0 +1,55 @@
+---
+title: "Introduction to the fars package"
+author: "Vadim Bondarenko"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Introduction to the fars package}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Intro to Fatality Analysis Reporting System (FARS)
+
+The functions provided in the `fars` package facilitate working with data from the US National Highway Traffic Safety Administration's [Fatality Analysis Reporting System](https://www.nhtsa.gov/research-data/fatality-analysis-reporting-system-fars), which is a nationwide census providing the American public yearly data regarding fatal injuries suffered in motor vehicle traffic crashes.
+
+
+## Installation
+You can install the package from GitHub using the `devtools` package:
+```{r, eval=FALSE}
+devtools::install_github("vadimus202/fars")
+```
+
+
+## Usage Examples
+
+### Copy FARS files into working directory
+
+The package includes sample csv files for 2013-2015 data.
+```{r}
+library(fars)
+library(magrittr)
+library(knitr)
+
+my_file <- system.file("extdata", "fars_data.zip", package = "fars")
+unzip(my_file, junkpaths = TRUE)
+```
+
+### Preview 2015 FARS data
+```{r, results='asis'}
+file_name <- make_filename(2015)
+df <- fars_read(file_name)
+df %>% head() %>% kable()
+```
+
+### Summarize 2013-2015 data
+```{r, results='asis'}
+fars_summarize_years(2013:2015) %>% kable()
+```
+
+### Plot 2014 accidents on California state map
+```{r CA_map, fig.width=8}
+fars_map_state(6,2014)
+```
+
+

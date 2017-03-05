@@ -13,4 +13,8 @@ Depends: maps
 Imports: dplyr,
     readr,
     tidyr
-Suggests: testthat
+Suggests: testthat,
+    knitr,
+    rmarkdown,
+    magrittr
+VignetteBuilder: knitr

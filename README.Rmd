@@ -28,3 +28,31 @@ devtools::install_github("vadimus202/fars")
 
 ## Usage Examples
 
+### Copy FARS files into working directory
+```{r}
+library(fars)
+library(magrittr)
+library(knitr)
+
+my_file <- system.file("extdata", "fars_data.zip", package = "fars")
+unzip(my_file, junkpaths = TRUE)
+```
+
+### Preview 2015 FARS data
+```{r}
+file_name <- make_filename(2015)
+df <- fars_read(file_name)
+df %>% head() %>% kable()
+```
+
+### Summarize 2013-2015 data
+```{r}
+fars_summarize_years(2013:2015) %>% kable()
+```
+
+### Plot 2014 accidents on California state map
+```{r CA_map}
+fars_map_state(6,2014)
+```
+
+
