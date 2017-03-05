@@ -18,14 +18,15 @@
 #' fars_read("accident_2013.csv.bz2")
 #'
 #' @importFrom readr read_csv
+#' @import dplyr
 #' @export
 fars_read <- function(filename) {
-        if(!file.exists(filename))
-                stop("file '", filename, "' does not exist")
-        data <- suppressMessages({
-                readr::read_csv(filename, progress = FALSE)
-        })
-        dplyr::tbl_df(data)
+    if(!file.exists(filename))
+        stop("file '", filename, "' does not exist")
+    data <- suppressMessages({
+        readr::read_csv(filename, progress = FALSE)
+    })
+    tbl_df(data)
 }
 
 
@@ -49,8 +50,8 @@ fars_read <- function(filename) {
 #'
 #' @export
 make_filename <- function(year) {
-        year <- as.integer(year)
-        sprintf("accident_%d.csv.bz2", year)
+    year <- as.integer(year)
+    sprintf("accident_%d.csv.bz2", year)
 }
 
 
@@ -83,17 +84,17 @@ make_filename <- function(year) {
 #'
 #' @export
 fars_read_years <- function(years) {
-        lapply(years, function(year) {
-                file <- make_filename(year)
-                tryCatch({
-                        dat <- fars_read(file)
-                        dplyr::mutate(dat, year = year) %>%
-                                dplyr::select_("MONTH", "year")
-                }, error = function(e) {
-                        warning("invalid year: ", year)
-                        return(NULL)
-                })
+    lapply(years, function(year) {
+        file <- make_filename(year)
+        tryCatch({
+            dat <- fars_read(file)
+            mutate(dat, year = year) %>%
+                select_("MONTH", "year")
+        }, error = function(e) {
+            warning("invalid year: ", year)
+            return(NULL)
         })
+    })
 }
 
 
@@ -123,11 +124,11 @@ fars_read_years <- function(years) {
 #'
 #' @export
 fars_summarize_years <- function(years) {
-        dat_list <- fars_read_years(years)
-        dplyr::bind_rows(dat_list) %>%
-                dplyr::group_by_("year", "MONTH") %>%
-                dplyr::summarize(n = n()) %>%
-                tidyr::spread_("year", "n")
+    dat_list <- fars_read_years(years)
+    bind_rows(dat_list) %>%
+        group_by_("year", "MONTH") %>%
+        summarize(n = n()) %>%
+        tidyr::spread_("year", "n")
 }
 
 #' Plot accidents on a state map.
@@ -138,43 +139,44 @@ fars_summarize_years <- function(years) {
 #'
 #' An invalid state number throws an error. If no accides found in that state,
 #' the function returns \code{NULL} silently. The function uses imported
-#' \code{maps::map()} tp plot the data.
+#' \code{maps::map()} to plot the data.
 #'
 #' @param state.num an integer, or an object that can be coerced into integer,
 #'   representing a state number
 #' @param year an integer, or an object that can be coerced into integer,
 #'   representing a calendar year
 #'
-#' @return a plot of a state accidents map
+#' @return a plot of a state accidents on a map
 #'
-#' @export
 #'
 #' @import dplyr
-#' @importFrom maps map
+#' @import maps
 #'
 #' @examples
+#' # unzip files into your \code{getwd()}
 #' my_file <- system.file("extdata", "fars_data.zip", package = "fars")
 #' unzip(my_file, junkpaths = TRUE)
 #' fars_map_state(16, 2015)
 #'
+#' @export
 #'
 fars_map_state <- function(state.num, year) {
-        filename <- make_filename(year)
-        data <- fars_read(filename)
-        state.num <- as.integer(state.num)
+    filename <- make_filename(year)
+    data <- fars_read(filename)
+    state.num <- as.integer(state.num)
 
-        if(!(state.num %in% unique(data$STATE)))
-                stop("invalid STATE number: ", state.num)
-        data.sub <- dplyr::filter_(data, "STATE" == state.num)
-        if(nrow(data.sub) == 0L) {
-                message("no accidents to plot")
-                return(invisible(NULL))
-        }
-        is.na(data.sub$LONGITUD) <- data.sub$LONGITUD > 900
-        is.na(data.sub$LATITUDE) <- data.sub$LATITUDE > 90
-        with(data.sub, {
-                maps::map("state", ylim = range(LATITUDE, na.rm = TRUE),
-                          xlim = range(LONGITUD, na.rm = TRUE))
-                graphics::points(LONGITUD, LATITUDE, pch = 46)
-        })
+    if(!(state.num %in% unique(data$STATE)))
+        stop("invalid STATE number: ", state.num)
+    data.sub <- filter_(data, ~STATE == state.num)
+    if(nrow(data.sub) == 0L) {
+        message("no accidents to plot")
+        return(invisible(NULL))
+    }
+    is.na(data.sub$LONGITUD) <- data.sub$LONGITUD > 900
+    is.na(data.sub$LATITUDE) <- data.sub$LATITUDE > 90
+    with(data.sub, {
+        maps::map("state", ylim = range(LATITUDE, na.rm = TRUE),
+                  xlim = range(LONGITUD, na.rm = TRUE))
+        graphics::points(LONGITUD, LATITUDE, pch = 46)
+    })
 }

@@ -20,6 +20,11 @@ Working with FARS data made easy.
 
 
 ## Installation
+You can install the package from GitHub using the `devtools` package:
+```{r, eval=FALSE}
+devtools::install_github("vadimus202/fars")
+```
+
 
 ## Usage Examples
 

@@ -14,7 +14,7 @@ representing a state number}
 representing a calendar year}
 }
 \value{
-a plot of a state accidents map
+a plot of a state accidents on a map
 }
 \description{
 This function takes a state number and year as its argumants, and returns a
@@ -24,12 +24,12 @@ raw datsets saved in \code{getwd()}.
 \details{
 An invalid state number throws an error. If no accides found in that state,
 the function returns \code{NULL} silently. The function uses imported
-\code{maps::map()} tp plot the data.
+\code{maps::map()} to plot the data.
 }
 \examples{
+# unzip files into your \\code{getwd()}
 my_file <- system.file("extdata", "fars_data.zip", package = "fars")
 unzip(my_file, junkpaths = TRUE)
 fars_map_state(16, 2015)
-
 
 }
